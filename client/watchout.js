@@ -53,8 +53,10 @@ var render = function(enemyData){
          .attr('cy', function(d){return d.y})
          .attr('fill', function(d){return d.color});
 
-  enemies.attr('cx', function(d){return d.x})
-         .attr('cy', function(d){return d.y});
+  enemies.transition()
+         .attr('cx', function(d){return d.x})
+         .attr('cy', function(d){return d.y})
+         .duration(2000);
 
   enemies.exit()
          .remove();
@@ -62,7 +64,7 @@ var render = function(enemyData){
 };
 
 
-setInterval( function(){ render(createEnemies()) } , 1000);
+setInterval( function(){ render(createEnemies()) } , 2000);
 
 
 
