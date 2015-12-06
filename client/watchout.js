@@ -10,6 +10,7 @@ var gameOptions = {
 var gameStats = {
   score: 0,
   bestScore: 0,
+  collisions: 0
 };
 
 var axes = {
@@ -100,9 +101,13 @@ var checkAllCollisions = function () {
     
     if(xDiff < radiusSum && yDiff < radiusSum){
       console.log('Collision!');
+      gameStats.collisions++;
+      d3.selectAll('.collisions span').text(gameStats.collisions);
       gameStats.bestScore = Math.max(gameStats.score, gameStats.bestScore);
+
       gameStats.score = 0;
       d3.selectAll('.current span').text(0);
+      d3.selectAll('.high span').text(gameStats.bestScore);
     }
   };
   
