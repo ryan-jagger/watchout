@@ -1,5 +1,3 @@
-// start slingin' some d3 here.
-
 var gameOptions = {
   height: 450,
   width: 700,
@@ -10,7 +8,8 @@ var gameOptions = {
 var gameStats = {
   score: 0,
   bestScore: 0,
-  collisions: 0
+  collisions: 0,
+  prevCollision: false
 };
 
 var axes = {
@@ -37,7 +36,6 @@ var createEnemies = function () {
 
 
 var createPlayer = function(){
-
   var player = {
     height: 30,
     width: 30,
@@ -67,7 +65,6 @@ var createPlayer = function(){
 
 
 var render = function(enemyData){
-
   var enemies = gameBoard.selectAll('.enemy')
                          .data(enemyData, function(d){return d.id;});
 
@@ -86,44 +83,49 @@ var render = function(enemyData){
 
   enemies.exit()
          .remove();
-
 };
 
 var checkAllCollisions = function () {
   var enemies = gameBoard.selectAll('.enemy');
   var player = gameBoard.select('.player');
+  var collision = false;
 
   var checkCollision = function (enemy) {
     var radiusSum = enemy.r + player.attr('width') / 2;
-
     var xDiff = Math.abs(enemy.cx - (Number(player.attr('x')) + 15)) +2;
     var yDiff = Math.abs(enemy.cy - (Number(player.attr('y')) + 15)) +2;
     
-    if(xDiff < radiusSum && yDiff < radiusSum){
-      console.log('Collision!');
-      gameStats.collisions++;
-      d3.selectAll('.collisions span').text(gameStats.collisions);
-      gameStats.bestScore = Math.max(gameStats.score, gameStats.bestScore);
-
-      gameStats.score = 0;
-      d3.selectAll('.current span').text(0);
-      d3.selectAll('.high span').text(gameStats.bestScore);
+    if(xDiff < radiusSum && yDiff < radiusSum) {
+      collision = true;
     }
   };
   
   enemies.each(checkCollision);
 
-};
+  if(collision){
+    console.log('Collision!');
+    
+    if(collision != gameStats.prevCollision){
+      gameStats.collisions++;  
+      d3.selectAll('.collisions span').text(gameStats.collisions);
+    }
 
+    gameStats.bestScore = Math.max(gameStats.score, gameStats.bestScore);
+    gameStats.score = 0;
+    d3.selectAll('.current span').text(0);
+    d3.selectAll('.high span').text(gameStats.bestScore);
+  }
+  gameStats.prevCollision = collision;
+};
 
 var gameTurn = function(){
- render(createEnemies());
- d3.selectAll('.current span').text(gameStats.score++);
+  render(createEnemies());
+  d3.selectAll('.current span').text(gameStats.score++);
 };
 
-d3.timer(checkAllCollisions);
-setInterval( gameTurn , 2000);
 createPlayer();
+setInterval( gameTurn , 2000);
+d3.timer(checkAllCollisions);
 
 
 /*
