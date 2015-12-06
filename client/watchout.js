@@ -69,16 +69,19 @@ var render = function(enemyData){
                          .data(enemyData, function(d){return d.id;});
 
   enemies.enter()
-         .append('svg:circle')
+         .append('svg:g')
+         .attr('transform', function(d) { return 'translate(' + d.cx + ',' + d.cy + ') scale(.23,.23)'; })
          .attr('class', 'enemy')
+         .append('svg:path')
+         .attr('class', 'spin')
+         .attr('d', 'm 0,-60 l 20,40 l 40,20 l -40,20 l -20,40 l -20,-40 l -40,-20 l 40,-20 z')
          .attr('r', function(d){return d.r})
          .attr('cx', function(d){return d.cx})
          .attr('cy', function(d){return d.cy})
          .attr('fill', function(d){return d.color});
 
   enemies.transition()
-         .attr('cx', function(d){return d.cx})
-         .attr('cy', function(d){return d.cy})
+         .attr('transform', function(d) { return 'translate(' + d.cx + ',' + d.cy + ') scale(.23,.23)'; })
          .duration(2000);
 
   enemies.exit()
@@ -126,73 +129,3 @@ var gameTurn = function(){
 createPlayer();
 setInterval( gameTurn , 2000);
 d3.timer(checkAllCollisions);
-
-
-/*
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-TESTING STUFF
-
-
-<path d= transform="translate(50,120) scale(.23,.23)" style="stroke: rgb(0, 0, 255); fill: red;"></path>
-
-var shuriken = gameBoard.selectAll('.star')
-                .data([1])
-                .enter()
-                .append('svg:path')
-                .attr('d', 'm 0,-60 l 20,40 l 40,20 l -40,20 l -20,40 l -20,-40 l -40,-20 l 40,-20 z')
-                .attr('transform', 'translate(50,120) scale(.23,.23)')
-                .attr('fill', 'red')
-
-
-gameBoard.selectAll('.test')
-          .data([1])
-          .enter()
-          .append('rect')
-          .attr('height',30)
-          .attr('width',30)
-          .attr('fill','white')
-          .attr('class','test')
-          .attr('x',50)
-          .attr('y',50)
-          .call(drag)
-
-gameBoard.selectAll('.test').  ...
-
-
-var drag = d3.behavior.drag()  
-             .on('dragstart', function(d) { this.setAttribute('fill', 'red'); })
-             .on('drag', function(d) {     this.setAttribute('x', d3.event.x)
-                                           this.setAttribute('y', d3.event.y); })
-             .on('dragend', function(e) { this.setAttribute('fill', 'black'); });
-
-
-var circle = box.selectAll('.test')  
-                .data([{ x:  , y: axes.y(Math.random()*100)}])
-                .enter()
-                .append('svg:circle')
-                .attr('class', 'draggableCircle')
-                .attr('cx', function(d) { return d.x; })
-                .attr('cy', function(d) { return d.y; })
-                .attr('r', function(d) { return d.r; })
-                
-                .style('fill', 'black');
-
-
-
-
-*/
